@@ -1,0 +1,22 @@
+{% extends "base.html" %}
+{% block content %}
+<h2>Admin Panel - All Leads</h2>
+
+<table>
+    <tr>
+        <th>Tracking ID</th>
+        <th>Offer ID</th>
+        <th>Payout</th>
+        <th>Time</th>
+    </tr>
+
+    {% for lead in leads %}
+    <tr>
+        <td>{{ lead[0] }}</td>
+        <td>{{ lead[1] }}</td>
+        <td>${{ lead[2] }}</td>
+        <td>{{ lead[3] }}</td>
+    </tr>
+    {% endfor %}
+</table>
+{% endblock %}

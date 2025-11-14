@@ -1,0 +1,59 @@
+{% extends "base.html" %}
+{% block content %}
+<div class="d-flex justify-content-between">
+  <h3>Dashboard - Welcome {{ user['username'] }}</h3>
+  <div>
+    <form class="d-inline" method="get" action="/dashboard">
+      <input name="tracking_id" placeholder="filter tracking_id" class="form-control d-inline" style="width:200px" value="{{ request.args.get('tracking_id','') }}">
+      <input name="from" type="date" class="form-control d-inline" style="width:160px" value="{{ request.args.get('from','') }}">
+      <input name="to" type="date" class="form-control d-inline" style="width:160px" value="{{ request.args.get('to','') }}">
+      <button class="btn btn-primary">Apply</button>
+    </form>
+  </div>
+</div>
+
+<hr>
+<div class="row">
+  <div class="col-md-8">
+    <h5>Leads</h5>
+    <table class="table table-sm table-striped">
+      <thead><tr><th>Tracking</th><th>Offer</th><th>Payout</th><th>Time</th></tr></thead>
+      <tbody>
+        {% for l in leads %}
+        <tr><td>{{l['tracking_id']}}</td><td>{{l['offer_id']}}</td><td>${{l['payout']}}</td><td>{{l['timestamp']}}</td></tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+  <div class="col-md-4">
+    <h5>Summary</h5>
+    <canvas id="chart"></canvas>
+    <hr>
+    <a class="btn btn-outline-primary" href="/admin/export">Export CSV</a>
+  </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+<script>
+const labels = JSON.parse(`{{ chart_labels | tojson }}`);
+const values = JSON.parse(`{{ chart_data | tojson }}`);
+
+const ctx = document.getElementById('chart').getContext('2d');
+
+new Chart(ctx, {
+  type: 'bar',
+  data: {
+    labels: labels,
+    datasets: [{
+      label: 'Leads',
+      data: values,
+      backgroundColor: 'rgba(54,162,235,0.6)'
+    }]
+  },
+  options: { 
+    responsive: true 
+  }
+});
+</script>
+{% endblock %}
